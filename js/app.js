@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  const movies = [];
+  let movies = [];
 
   const renderMovies = function() {
     $('#listings').empty();
@@ -57,4 +57,30 @@
   };
 
   // ADD YOUR CODE HERE
+  $(document).ready(function() {
+    var searchForm = document.querySelector('form');
+    var inputBox = document.querySelector('#search');
+    searchForm.addEventListener('submit', function() {
+      event.preventDefault();
+      if (inputBox.value !== "") {
+        var userSearch = inputBox.value;
+        $.get("https://omdb-api.now.sh/?s=" + userSearch, function(data) {
+          movies = [];
+          for (var i = 0; i < data.Search.length; i++) {
+            // console.log(data.Search);
+            var movie = {};
+            // movies.push({});
+            movie.id = data.Search[i].imdbID;
+            movie.poster= data.Search[i].Poster;
+            movie.title = data.Search[i].Title;
+            movie.year = data.Search[i].Year;
+            movies.push(movie);
+          }
+          console.log(movies);
+          renderMovies();
+        });
+        inputBox.value = "";
+      }
+    })
+  })
 })();
