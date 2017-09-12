@@ -60,6 +60,7 @@
   $(document).ready(function() {
     var searchForm = document.querySelector('form');
     var inputBox = document.querySelector('#search');
+    var newPara = "";
     searchForm.addEventListener('submit', function() {
       event.preventDefault();
       if (inputBox.value !== "") {
@@ -67,7 +68,7 @@
         $.get("https://omdb-api.now.sh/?s=" + userSearch, function(data) {
           movies = [];
           for (var i = 0; i < data.Search.length; i++) {
-            // console.log(data.Search);
+            console.log(data.Search);
             var movie = {};
             // movies.push({});
             movie.id = data.Search[i].imdbID;
@@ -78,9 +79,16 @@
           }
           console.log(movies);
           renderMovies();
+        for (var j = 0; j < movies.length; j++) {
+          $.get("https://omdb-api.now.sh/?i=" + movies[j].id, function(data) {
+            newPara = data.Plot;
+            document.getElementById(data.imdbID).querySelector(".modal-content").querySelector("p").textContent = newPara;
+          })
+          }
         });
         inputBox.value = "";
+        }
       }
-    })
+    )
   })
 })();
